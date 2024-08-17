@@ -1,7 +1,7 @@
 {
   "name": "p4",
   "version": "1.0.0",
-  "main": "src/script.js",
+  "main": "public/script.js",
   "scripts": {
     "start": "node server.js",
     "build": "npm install",
