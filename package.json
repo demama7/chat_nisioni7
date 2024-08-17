@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "script.js",
   "scripts": {
-    "start": "node public/script.js",
+    "start": "node src/script.js",
     "build": "echo 'No build step needed'",
     "install": "echo 'Install step not defined'"
   },
