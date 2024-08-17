@@ -1,7 +1,6 @@
 {
   "name": "p4",
   "version": "1.0.0",
-  "main": "script.js",
   "scripts": {
     "start": "node script.js",
     "build": "echo 'No build step'"
