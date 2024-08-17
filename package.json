@@ -1,9 +1,11 @@
 {
   "name": "p4",
   "version": "1.0.0",
+  "main": "script.js",
   "scripts": {
     "start": "node public/script.js",
-    "build": "echo 'No build step'"
+    "build": "echo 'No build step needed'",
+    "install": "echo 'Install step not defined'"
   },
   "keywords": [],
   "author": "",
