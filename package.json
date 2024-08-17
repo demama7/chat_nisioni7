@@ -2,7 +2,7 @@
   "name": "p4",
   "version": "1.0.0",
   "scripts": {
-    "start": "node script.js",
+    "start": "node public/script.js",
     "build": "echo 'No build step'"
   },
   "keywords": [],
