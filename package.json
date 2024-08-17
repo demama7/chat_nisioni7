@@ -4,7 +4,7 @@
   "main": "script.js",
   "scripts": {
     "start": "node src/script.js",
-    "build": "echo 'No build step needed'",
+    "build": "npm install",
     "install": "echo 'Install step not defined'"
   },
   "keywords": [],
