@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "script.js",
   "scripts": {
-    "start": "node script.js",
+    "start": "index.html",
     "build": "npm install'"
   },
   "keywords": [],
