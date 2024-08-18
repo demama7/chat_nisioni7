@@ -4,40 +4,46 @@ const socketIo = require('socket.io');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const csurf = require('csurf');
-const { escape, trim } = require('validator'); // השתמש בפונקציות אלו
+const cookieParser = require('cookie-parser');
+const { escape, trim } = require('validator');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-const csrfProtection = csurf({ cookie: true });
-
 app.use(helmet());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Rate limiting middleware
 const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 דקות
-    max: 100 // הגבל כל IP ל-100 בקשות בכל חלון זמן
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: 'Too many requests from this IP, please try again later.'
 });
 app.use('/api/', apiLimiter);
 
+// CSRF middleware
+const csrfProtection = csurf({ cookie: true });
 app.use(csrfProtection);
 
-let users = {}; // אובייקט לשמירה על משתמשים לפי מזהי הסוקט שלהם
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'register.html'));
+});
+
+let users = {};
 let messages = [];
 let nextMessageId = 1;
 
 io.on('connection', (socket) => {
     console.log('User connected');
-    
-    // Handle new user
-    socket.on('new user', (userName) => {
-        if (!userName || typeof userName !== 'string') return; // אימות userName
 
-        userName = trim(escape(userName)); // סינון קלטים
-        // Remove previous user if exists
+    socket.on('new user', (userName) => {
+        if (!userName || typeof userName !== 'string') return;
+
+        userName = trim(escape(userName));
         const previousUserId = Object.keys(users).find(id => users[id] === userName);
         if (previousUserId) {
             delete users[previousUserId];
@@ -48,9 +54,8 @@ io.on('connection', (socket) => {
         io.emit('user list', Object.values(users));
     });
 
-    // Handle incoming messages
     socket.on('chat message', (data) => {
-        if (!data.userName || !data.message || typeof data.userName !== 'string' || typeof data.message !== 'string') return; // אימות נתונים
+        if (!data.userName || !data.message || typeof data.userName !== 'string' || typeof data.message !== 'string') return;
 
         const userName = trim(escape(data.userName));
         const message = {
@@ -63,23 +68,20 @@ io.on('connection', (socket) => {
         io.emit('chat message', messages);
     });
 
-    // Handle message deletion
     socket.on('delete message', (messageId) => {
-        if (isNaN(messageId)) return; // אימות messageId
+        if (isNaN(messageId)) return;
 
         messages = messages.filter(msg => msg.id !== parseInt(messageId));
         io.emit('chat message', messages);
-        io.emit('message deleted', messageId); // הודעה לכל הלקוחות
+        io.emit('message deleted', messageId);
     });
 
-    // Handle logout
     socket.on('logout', () => {
         const userName = users[socket.id];
         delete users[socket.id];
         io.emit('user list', Object.values(users));
     });
 
-    // Handle disconnection
     socket.on('disconnect', () => {
         console.log('User disconnected');
         delete users[socket.id];
