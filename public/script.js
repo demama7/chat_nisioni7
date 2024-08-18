@@ -2,9 +2,9 @@ const socket = io();
 let userName = localStorage.getItem('userName');
 
 if (!userName) {
-    window.location.href = '/register.html'; // Redirect to registration page
+    window.location.href = '/register.html'; // הפניית משתמשים ללא שם משתמש לדף ההרשמה
 } else {
-    // Inform the server about the new user
+    // עדכון השרת עם שם המשתמש החדש
     socket.emit('new user', userName);
 }
 
@@ -57,11 +57,11 @@ socket.on('chat message', function(messages) {
     messages.forEach(function(data) {
         var messageElement = document.createElement('div');
         messageElement.className = 'chat-message';
-        messageElement.id = data.id; // Set the message ID to the element
+        messageElement.id = data._id; // הגדרת מזהה ההודעה לאלמנט
         messageElement.innerHTML = `
             <span>${data.userName}:</span> ${data.message || ''}
             ${data.image ? `<img src="${data.image}" alt="Image" style="max-width: 100%; height: auto; margin-top: 5px;" />` : ''}
-            ${data.userName === userName ? `<button onclick="deleteMessage('${data.id}')">מחק</button>` : ''}
+            ${data.userName === userName ? `<button class="delete-message-button" data-id="${data._id}">מחק</button>` : ''}
         `;
         chatMessages.appendChild(messageElement);
     });
@@ -70,12 +70,20 @@ socket.on('chat message', function(messages) {
 
 socket.on('user list', function(users) {
     var userList = document.getElementById('users');
-    userList.innerHTML = ''; // Clear current user list
+    userList.innerHTML = ''; // ניקוי רשימת המשתמשים הנוכחית
     users.forEach(function(user) {
         var listItem = document.createElement('li');
         listItem.textContent = user;
         userList.appendChild(listItem);
     });
+});
+
+// טיפול באירועים לדינמיקה של כפתורי מחיקה
+document.getElementById('chatMessages').addEventListener('click', function(event) {
+    if (event.target && event.target.classList.contains('delete-message-button')) {
+        var messageId = event.target.getAttribute('data-id');
+        deleteMessage(messageId);
+    }
 });
 
 function deleteMessage(messageId) {
@@ -85,6 +93,6 @@ function deleteMessage(messageId) {
 socket.on('message deleted', function(messageId) {
     var messageElement = document.getElementById(messageId);
     if (messageElement) {
-        messageElement.remove(); // Remove the message from the DOM
+        messageElement.remove(); // הסרת ההודעה מה-DOM
     }
 });
