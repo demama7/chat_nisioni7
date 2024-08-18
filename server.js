@@ -4,6 +4,7 @@ const socketIo = require('socket.io');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const csurf = require('csurf');
+const { escape, trim } = require('validator'); // השתמש בפונקציות אלו
 
 const app = express();
 const server = http.createServer(app);
@@ -17,14 +18,14 @@ app.use(express.static('public'));
 
 // Rate limiting middleware
 const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100 // Limit each IP to 100 requests per windowMs
+    windowMs: 15 * 60 * 1000, // 15 דקות
+    max: 100 // הגבל כל IP ל-100 בקשות בכל חלון זמן
 });
 app.use('/api/', apiLimiter);
 
 app.use(csrfProtection);
 
-let users = {}; // Object to keep track of users by their socket IDs
+let users = {}; // אובייקט לשמירה על משתמשים לפי מזהי הסוקט שלהם
 let messages = [];
 let nextMessageId = 1;
 
@@ -33,8 +34,9 @@ io.on('connection', (socket) => {
     
     // Handle new user
     socket.on('new user', (userName) => {
-        if (!userName || typeof userName !== 'string') return; // Validate userName
+        if (!userName || typeof userName !== 'string') return; // אימות userName
 
+        userName = trim(escape(userName)); // סינון קלטים
         // Remove previous user if exists
         const previousUserId = Object.keys(users).find(id => users[id] === userName);
         if (previousUserId) {
@@ -48,12 +50,13 @@ io.on('connection', (socket) => {
 
     // Handle incoming messages
     socket.on('chat message', (data) => {
-        if (!data.userName || !data.message || typeof data.userName !== 'string' || typeof data.message !== 'string') return; // Validate data
+        if (!data.userName || !data.message || typeof data.userName !== 'string' || typeof data.message !== 'string') return; // אימות נתונים
 
+        const userName = trim(escape(data.userName));
         const message = {
             id: nextMessageId++,
-            userName: data.userName,
-            message: data.message,
+            userName: userName,
+            message: trim(escape(data.message)),
             image: data.image,
         };
         messages.push(message);
@@ -62,11 +65,11 @@ io.on('connection', (socket) => {
 
     // Handle message deletion
     socket.on('delete message', (messageId) => {
-        if (isNaN(messageId)) return; // Validate messageId
+        if (isNaN(messageId)) return; // אימות messageId
 
         messages = messages.filter(msg => msg.id !== parseInt(messageId));
         io.emit('chat message', messages);
-        io.emit('message deleted', messageId); // Notify all clients
+        io.emit('message deleted', messageId); // הודעה לכל הלקוחות
     });
 
     // Handle logout
