@@ -1,41 +1,36 @@
 const socket = io();
 let userName = localStorage.getItem('userName');
+let password = localStorage.getItem('password');
 
 // Function to open modal
 function openUsernameModal() {
     document.getElementById('usernameModal').style.display = 'block';
+    
 }
 
-// Function to close modal
-function closeUsernameModal() {
-    document.getElementById('usernameModal').style.display = 'none';
-}
+
 
 // Check if there is a username
-if (!userName) {
+if (!userName ) {
     openUsernameModal();
 } else {
     // Notify server of new user
     socket.emit('new user', userName);
 }
 
-// Click event for submit button
-document.getElementById('submitUsername').addEventListener('click', function() {
-    const input = document.getElementById('usernameInput');
-    const enteredName = input.value.trim();
-
-    if (enteredName) {
-        userName = enteredName;
-        localStorage.setItem('userName', userName);
-        closeUsernameModal();
-        socket.emit('new user', userName);
-    } else {
-        alert('אנא הכנס שם משתמש.');
-    }
-});
+// בדיקת שם משתמש וסיסמה
+if ( !password) {
+    openUsernameModal();
+} else {
+    socket.emit('new user', {  password });
+    
+    document.getElementById("profilePassword").innerText = "****";
+}
 
 
-// פונקציה לפתיחת מודאל להזנת שם המשתמש
+
+
+// פונקציה לפתיחת מודאל להזנת שם משתמש
 function openUsernameModal() {
     document.getElementById('usernameModal').style.display = 'block';
 }
@@ -55,42 +50,81 @@ function closeProfileMenu() {
     document.getElementById('profileMenu').style.display = 'none';
 }
 
-// אם שם המשתמש לא מוגדר, פותחים את המודאל להזנת שם המשתמש
-if (!userName) {
+// בדיקת שם משתמש וסיסמה
+if (!userName || !password) {
     openUsernameModal();
 } else {
     // מודיע לשרת על משתמש חדש
-    socket.emit('new user', userName);
+    socket.emit('new user', { userName, password });
     document.getElementById('profileUsername').innerText = userName;
+    document.getElementById("profilePassword").innerText = "****";
+    document.getElementById('openPassword').addEventListener("click", function () {
+        document.getElementById("profilePassword").innerText = password;
+    });
     document.getElementById('profileJoinDate').innerText = new Date().toLocaleDateString(); // תאריך הצטרפות לדוגמה
 }
 
+// טיפול בקליק על כפתור אישור במודאל להזנת שם משתמש וסיסמה
+document.getElementById('submitUsername').addEventListener('click', function () {
+    const enteredName = document.getElementById('usernameInput').value.trim();
+    const enteredPassword = document.getElementById('passwordInput').value.trim();
+
+    if (enteredName && enteredPassword) {
+        userName = enteredName;
+        password = enteredPassword;
+        localStorage.setItem('userName', userName);
+        localStorage.setItem('password', password);
+        closeUsernameModal();
+        socket.emit('new user', { userName, password });
+        document.getElementById('profileUsername').innerText = userName;
+        document.getElementById('openPassword').addEventListener("click", function () {
+            document.getElementById("profilePassword").innerText = password;
+        });
+        document.getElementById('profileJoinDate').innerText = new Date().toLocaleDateString(); // תאריך הצטרפות לדוגמה
+    } else {
+        alert('אנא הכנס שם משתמש וסיסמה');
+    }
+});
+
 // טיפול בקליק על כפתור פרופיל
-document.getElementById('profileButton').addEventListener('click', function() {
+document.getElementById('profileButton').addEventListener('click', function () {
     openProfileMenu();
 });
 
 // טיפול בקליק על כפתור סגירה בתפריט פרופיל
 document.getElementById('closeProfileMenu').addEventListener('click', function() {
+    document.getElementById("profilePassword").innerText = "****";
+    document.getElementById('openPassword').addEventListener("click" , function(){
+        document.getElementById("profilePassword").innerText = password;
+    });
     closeProfileMenu();
+
 });
 
-// טיפול בקליק על כפתור אישור במודאל להזנת שם משתמש
+// טיפול בקליק על כפתור אישור במודאל להזנת שם משתמש וסיסמה
 document.getElementById('submitUsername').addEventListener('click', function() {
-    const input = document.getElementById('usernameInput');
-    const enteredName = input.value.trim();
+    const enteredName = document.getElementById('usernameInput').value.trim();
+    const enteredPassword = document.getElementById('passwordInput').value.trim();
 
-    if (enteredName) {
+    if (enteredName && enteredPassword) {
         userName = enteredName;
+        password = enteredPassword;
         localStorage.setItem('userName', userName);
+        localStorage.setItem('password', password);
         closeUsernameModal();
-        socket.emit('new user', userName);
+        socket.emit('new user', { userName, password });
         document.getElementById('profileUsername').innerText = userName;
+        document.getElementById('openPassword').addEventListener("click" , function(){
+            document.getElementById("profilePassword").innerText = password;
+        });
         document.getElementById('profileJoinDate').innerText = new Date().toLocaleDateString(); // תאריך הצטרפות לדוגמה
     } else {
-        alert('אנא הכנס שם משתמש.'); // הצגת הודעה אם השם ריק
+        
     }
 });
+
+
+
 
 // טיפול בהודעות צ'אט מהשרת
 socket.on('chat message', function(data) {
@@ -137,10 +171,12 @@ socket.on('update users', function(users) {
 
 // טיפול בקליק על כפתור התנתקות
 document.getElementById('logoutButton').addEventListener('click', function() {
-    localStorage.removeItem('userName'); // הסרת שם המשתמש מה-localStorage
-    socket.emit('logout'); // הודעה לשרת על התנתקות
-    window.location.reload(); // רענון הדף
+    localStorage.removeItem('userName');
+    localStorage.removeItem('password');
+    socket.emit('logout');
+    window.location.reload();
 });
+
 
 
 document.getElementById('sendMessageButton').addEventListener('click', async function() {
@@ -241,3 +277,14 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('usernameModal').style.display = 'block';
     }
 });
+
+
+
+
+
+
+
+
+
+
+

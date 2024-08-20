@@ -9,11 +9,12 @@
 <body>
     <script src="/socket.io/socket.io.js"></script>
     
-    <!-- מודאל להזנת שם משתמש -->
+    <!-- מודאל להזנת שם משתמש וסיסמה -->
     <div id="usernameModal" class="modal">
         <div class="modal-content">
-            <h2>הכנס את שם המשתמש שלך</h2>
+            <h2>הכנס את שם המשתמש והסיסמה שלך</h2>
             <input type="text" id="usernameInput" placeholder="שם משתמש">
+            <input type="password" id="passwordInput" placeholder="סיסמה">
             <button id="submitUsername">אישור</button>
         </div>
     </div>
@@ -28,6 +29,8 @@
             <h3>פרטי פרופיל</h3>
             <p><strong>שם משתמש:</strong> <span id="profileUsername"></span></p>
             <p><strong>תאריך התחברות:</strong> <span id="profileJoinDate"></span></p>
+            <p><strong>סיסמה:</strong> <span id="profilePassword"></span></p>
+            <button id="openPassword">הצעגת סיסמה</button>
             <!-- הוסף פרטים נוספים לפי הצורך -->
         </div>
         

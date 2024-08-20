@@ -369,3 +369,12 @@ button:hover {
 #profileMenu p {
     margin: 5px 0;
 }
+
+
+#closeProfileMenu{
+    background-color: #ff0019;
+}
+
+#openPassword{
+    background-color: #066ddb ;
+}
