@@ -23,6 +23,12 @@ let specialObstacleInterval;
 let greenCircleInterval;
 let invincible = false; // משתנה שמסמן אם העכבר אינו פגיע
 
+const monsterImage = new Image();
+monsterImage.src = 'מפלצת.png'; // הנתיב לתמונה של המכשולים
+
+const superMonsterImage = new Image();
+superMonsterImage.src = 'סופרמפלצת.png'; // הנתיב לתמונה של סופרמפלצת
+
 function startGame() {
     timer = 0;
     obstacles = [];
@@ -99,7 +105,7 @@ function gameLoop() {
     if (gameOver) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // צייר את העיגול הכחול
+    // צייר את העכבר בתור עיגול כחול
     ctx.beginPath();
     ctx.arc(mouse.x, mouse.y, mouse.radius, 0, Math.PI * 2, false);
     ctx.fillStyle = 'blue';
@@ -110,8 +116,7 @@ function gameLoop() {
         const obstacle = obstacles[i];
         obstacle.y += speed;
 
-        ctx.fillStyle = 'red';
-        ctx.fillRect(obstacle.x, obstacle.y, obstacle.size, obstacle.size);
+        ctx.drawImage(monsterImage, obstacle.x, obstacle.y, obstacle.size, obstacle.size);
 
         if (
             mouse.x < obstacle.x + obstacle.size &&
@@ -121,9 +126,8 @@ function gameLoop() {
         ) {
             mouse.radius = mouse.originalRadius;
             setTimeout(() => {
-                ;
                 invincible = false;
-            },500);
+            }, 500);
             if (!invincible) {
                 gameOver = true;
                 clearInterval(interval);
@@ -144,8 +148,7 @@ function gameLoop() {
         const bottomObstacle = bottomObstacles[i];
         bottomObstacle.y -= speed;
 
-        ctx.fillStyle = 'red';
-        ctx.fillRect(bottomObstacle.x, bottomObstacle.y, bottomObstacle.size, bottomObstacle.size);
+        ctx.drawImage(monsterImage, bottomObstacle.x, bottomObstacle.y, bottomObstacle.size, bottomObstacle.size);
 
         if (
             mouse.x < bottomObstacle.x + bottomObstacle.size &&
@@ -155,9 +158,8 @@ function gameLoop() {
         ) {
             mouse.radius = mouse.originalRadius;
             setTimeout(() => {
-                ;
                 invincible = false;
-            },500);
+            }, 500);
             if (!invincible) {
                 gameOver = true;
                 clearInterval(interval);
@@ -173,20 +175,28 @@ function gameLoop() {
         }
     }
 
-    // טיפול במכשולים מיוחדים
+    // טיפול במכשולים מיוחדים (סופרמפלצות)
     for (let i = 0; i < specialObstacles.length; i++) {
         const specialObstacle = specialObstacles[i];
 
         const dx = mouse.x - specialObstacle.x;
         const dy = mouse.y - specialObstacle.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        const followSpeed = 3 + speed;
 
+        // חשב את הזווית בין המכשול לעכבר
+        const angle = Math.atan2(dy, dx);
+
+        // עדכן את מיקום המכשול לעבר העכבר
+        const followSpeed = 3 + speed;
         specialObstacle.x += (dx / distance) * followSpeed;
         specialObstacle.y += (dy / distance) * followSpeed;
 
-        ctx.fillStyle = (timer % 2 === 0) ? 'red' : 'yellow';
-        ctx.fillRect(specialObstacle.x, specialObstacle.y, specialObstacle.size, specialObstacle.size);
+        // צייר את המכשול בתמונה עם כיוון ההתמקדות
+        ctx.save();
+        ctx.translate(specialObstacle.x + specialObstacle.size / 2, specialObstacle.y + specialObstacle.size / 2);
+        ctx.rotate(angle);
+        ctx.drawImage(superMonsterImage, -specialObstacle.size / 2, -specialObstacle.size / 2, specialObstacle.size, specialObstacle.size);
+        ctx.restore();
 
         if (
             mouse.x < specialObstacle.x + specialObstacle.size &&
@@ -196,9 +206,8 @@ function gameLoop() {
         ) {
             mouse.radius = mouse.originalRadius;
             setTimeout(() => {
-                ;
                 invincible = false;
-            },500);
+            }, 500);
             if (!invincible) {
                 gameOver = true;
                 clearInterval(interval);
@@ -236,31 +245,40 @@ function gameLoop() {
             ctx.strokeStyle = 'blue';
             ctx.lineWidth = 5;
             ctx.stroke();
-
-            invincible = true; // עכבר אינו פגיע
             greenCircles.splice(i, 1);
             i--;
-
-            // אחזור את גודל העיגול הכחול אחרי זמן קצר
-            setTimeout(() => {
-                mouse.radius = mouse.originalRadius;
-                invincible = false;
-            },20000);
         }
     }
 
+    // טיפול במגע בין העכבר למכשולים ירוקים
+    if (mouse.radius > mouse.originalRadius) {
+        invincible = true; // הפוך את העכבר לחסין
+        setTimeout(() => {
+            invincible = false; // הסר חסינות לאחר זמן מה
+        }, 3000);
+    }
+
+    // צייר את העכבר מחדש עם העיגול הגדול
+    ctx.beginPath();
+    ctx.arc(mouse.x, mouse.y, mouse.radius, 0, Math.PI * 2, false);
+    ctx.fillStyle = 'blue';
+    ctx.fill();
+
+    // קרא לפונקציה לשוב לחזור עם התמונה של העכבר
     requestAnimationFrame(gameLoop);
 }
 
-// עדכון מיקום העכבר
+// התעדכן למיקום העכבר
 canvas.addEventListener('mousemove', (event) => {
-    mouse.x = event.clientX;
-    mouse.y = event.clientY;
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = event.clientX - rect.left;
+    mouse.y = event.clientY - rect.top;
 });
 
-// כפתור restart
-restartButton.addEventListener('click', startGame);
+// התחל משחק מחדש כאשר לוחצים על כפתור "התחל מחדש"
+restartButton.addEventListener('click', () => {
+    startGame();
+});
 
-// התחלת המשחק
+// התחל את המשחק
 startGame();
-
