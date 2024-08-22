@@ -278,13 +278,3 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
-
-
-
-
-
-
-
-
-

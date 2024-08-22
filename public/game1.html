@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>תפוס את הצבע</title>
+    <style>
+        body {
+            background:linear-gradient(rgb(206, 195, 38),rgb(250, 162, 80));
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .container {
+            text-align: center;
+        }
+        .square {
+            width: 100px;
+            height: 100px;
+            display: none;
+            margin: 10px;
+            position: absolute;
+        }
+        .red { background-color: red; }
+        .blue { background-color: blue; }
+        .green { background-color: green; }
+        .yellow { background-color: yellow; }
+        .menu, .timer {
+            margin-top: 20px;
+        }
+        .startButton button{
+            color: rgb(99, 255, 234);
+        }
+        .container{
+            background-color: #3fe497;
+            margin: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="startButton">התחל משחק</button>
+        <div class="timer">
+            <p id="timerDisplay">זמן נותר: 30 שניות</p>
+        </div>
+        <div class="menu" id="menu" style="display: none;">
+            <p id="resultText"></p>
+            <button onclick="window.location.reload()">משחק נוסף</button>
+        </div>
+        <div id="gameArea">
+            <div class="square red" id="redSquare"></div>
+            <div class="square blue" id="blueSquare"></div>
+            <div class="square green" id="greenSquare"></div>
+            <div class="square yellow" id="yellowSquare"></div>
+        </div>
+    </div>
+
+    <!-- החלק הזה יכלול את הקוד -->
+    <script src="game.js" defer></script>
+</body>
+</html>

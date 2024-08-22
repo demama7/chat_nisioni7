@@ -313,7 +313,7 @@ button:hover {
 #profileButton {
     position: absolute;
     top: 20px; /* מרחק מהקצה העליון של המסך */
-    left: 20px; /* מרחק מהקצה השמאלי של המסך */
+    right: 150px; /* מרחק מהקצה הימני של המסך */
     background-color: #007bff; /* צבע רקע */
     color: white; /* צבע טקסט */
     border: none;
@@ -352,7 +352,7 @@ button:hover {
     display: none; /* מוסתר כברירת מחדל */
     position: absolute;
     top: 60px; /* מרחק מהקצה העליון של המסך */
-    left: 20px; /* מרחק מהקצה השמאלי של המסך */
+    right: 20px; /* מרחק מהקצה השמאלי של המסך */
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -377,4 +377,69 @@ button:hover {
 
 #openPassword{
     background-color: #066ddb ;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+#gameContainer {
+    text-align: center;
+    width: 80%;
+}
+
+#canvasContainer {
+    display: flex;
+    justify-content: space-around;
+}
+
+canvas {
+    border: 1px solid #000;
+    background-color: #fff;
+}
+
+#tools {
+    margin-top: 10px;
+}
+
+button {
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+#rating .drawing {
+    margin: 10px;
+    text-align: center;
+}
+
+
+#linkGame{
+    position: absolute;
+    top: 25px; /* מרחק מהקצה העליון של המסך */
+    right: 270px; /* מרחק מהקצה הימני של המסך */
+    background-color: yellow;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    height: 7px;
+}
+
+#linkGame1{
+    position: absolute;
+    top: 25px; /* מרחק מהקצה העליון של המסך */
+    right: 480px; /* מרחק מהקצה הימני של המסך */
+    background-color: yellow;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    height: 7px;
 }
