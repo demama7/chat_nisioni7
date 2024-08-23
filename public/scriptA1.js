@@ -11,7 +11,8 @@ canvas.height = window.innerHeight;
 let obstacles = [];
 let specialObstacles = [];
 let bottomObstacles = [];
-let greenCircles = []; // עיגולים ירוקים
+let greenCircles = []; 
+let redCircles = []; // עיגולים אדומים
 let mouse = { x: canvas.width / 2, y: canvas.height / 2, radius: 20, originalRadius: 20 };
 let timer = 0;
 let interval;
@@ -21,13 +22,16 @@ let spawnRate = 1000;
 let difficultyIncreaseRate = 0.1;
 let specialObstacleInterval;
 let greenCircleInterval;
-let invincible = false; // משתנה שמסמן אם העכבר אינו פגיע
+let redCircleInterval; // מרווח זמן לעיגולים האדומים
+let invincible = false; 
 
 const monsterImage = new Image();
-monsterImage.src = 'מפלצת.png'; // הנתיב לתמונה של המכשולים
+monsterImage.src = 'מפלצת.png';
 
 const superMonsterImage = new Image();
-superMonsterImage.src = 'סופרמפלצת.png'; // הנתיב לתמונה של סופרמפלצת
+superMonsterImage.src = 'סופרמפלצת.png';
+
+const collisionSound = new Audio('bup.mp3'); // יצירת אובייקט אודיו
 
 function startGame() {
     timer = 0;
@@ -35,8 +39,9 @@ function startGame() {
     specialObstacles = [];
     bottomObstacles = [];
     greenCircles = [];
+    redCircles = []; // איפוס עיגולים אדומים
     gameOver = false;
-    invincible = false; // התחל את המשחק ללא חסינות
+    invincible = false;
     speed = 2;
     spawnRate = 1000;
     messageElement.classList.add('hidden');
@@ -49,6 +54,7 @@ function startGame() {
     spawnBottomObstacles();
     spawnSpecialObstacle();
     spawnGreenCircle();
+    spawnRedCircle(); // קריאת פונקציה לעיגול האדום
     gameLoop();
 }
 
@@ -59,7 +65,6 @@ function updateTimer() {
         const seconds = String(timer % 60).padStart(2, '0');
         timerElement.textContent = `${minutes}:${seconds}`;
 
-        // העלאת רמת הקושי
         speed += difficultyIncreaseRate;
         spawnRate = Math.max(200, spawnRate - 15);
     }
@@ -82,9 +87,12 @@ function spawnSpecialObstacle() {
 
     const durationOptions = [3000, 5000, 7000];
     const followDuration = durationOptions[Math.floor(Math.random() * durationOptions.length)];
-    const x = Math.random() * canvas.width;
-    const y = 0;
-    specialObstacles.push({ x, y, size: 50, followDuration });
+    specialObstacles.push({ 
+        x: Math.random() * canvas.width, 
+        y: 0, 
+        size: 50, 
+        followDuration 
+    });
 
     specialObstacleInterval = Math.random() * (10000 - 3000) + 3000;
     setTimeout(spawnSpecialObstacle, specialObstacleInterval);
@@ -93,41 +101,54 @@ function spawnSpecialObstacle() {
 function spawnGreenCircle() {
     if (gameOver) return;
 
-    const x = Math.random() * canvas.width;
-    const y = Math.random() * canvas.height;
-    greenCircles.push({ x, y, size: 30 });
+    greenCircles.push({ 
+        x: Math.random() * canvas.width, 
+        y: Math.random() * canvas.height, 
+        size: 30 
+    });
 
     greenCircleInterval = Math.random() * (7000 - 3000) + 3000;
     setTimeout(spawnGreenCircle, greenCircleInterval);
+}
+
+// פונקציה לעיגולים האדומים
+function spawnRedCircle() {
+    if (gameOver) return;
+
+    redCircles.push({ 
+        x: Math.random() * canvas.width, 
+        y: Math.random() * canvas.height, 
+        size: 30 
+    });
+
+    redCircleInterval = Math.random() * (10000 - 5000) + 5000;
+    setTimeout(spawnRedCircle, redCircleInterval);
+}
+
+function checkCollision(circle1, circle2) {
+    const dx = circle1.x - circle2.x;
+    const dy = circle1.y - circle2.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    return distance < circle1.radius + circle2.size / 2;
 }
 
 function gameLoop() {
     if (gameOver) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // צייר את העכבר בתור עיגול כחול
     ctx.beginPath();
     ctx.arc(mouse.x, mouse.y, mouse.radius, 0, Math.PI * 2, false);
     ctx.fillStyle = 'blue';
     ctx.fill();
 
-    // טיפול במכשולים רגילים
     for (let i = 0; i < obstacles.length; i++) {
         const obstacle = obstacles[i];
         obstacle.y += speed;
 
         ctx.drawImage(monsterImage, obstacle.x, obstacle.y, obstacle.size, obstacle.size);
 
-        if (
-            mouse.x < obstacle.x + obstacle.size &&
-            mouse.x + mouse.radius > obstacle.x &&
-            mouse.y < obstacle.y + obstacle.size &&
-            mouse.y + mouse.radius > obstacle.y
-        ) {
-            mouse.radius = mouse.originalRadius;
-            setTimeout(() => {
-                invincible = false;
-            }, 500);
+        if (checkCollision(mouse, obstacle)) {
             if (!invincible) {
                 gameOver = true;
                 clearInterval(interval);
@@ -143,23 +164,13 @@ function gameLoop() {
         }
     }
 
-    // טיפול במכשולים מלמטה למעלה
     for (let i = 0; i < bottomObstacles.length; i++) {
         const bottomObstacle = bottomObstacles[i];
         bottomObstacle.y -= speed;
 
         ctx.drawImage(monsterImage, bottomObstacle.x, bottomObstacle.y, bottomObstacle.size, bottomObstacle.size);
 
-        if (
-            mouse.x < bottomObstacle.x + bottomObstacle.size &&
-            mouse.x + mouse.radius > bottomObstacle.x &&
-            mouse.y < bottomObstacle.y + bottomObstacle.size &&
-            mouse.y + mouse.radius > bottomObstacle.y
-        ) {
-            mouse.radius = mouse.originalRadius;
-            setTimeout(() => {
-                invincible = false;
-            }, 500);
+        if (checkCollision(mouse, bottomObstacle)) {
             if (!invincible) {
                 gameOver = true;
                 clearInterval(interval);
@@ -175,7 +186,6 @@ function gameLoop() {
         }
     }
 
-    // טיפול במכשולים מיוחדים (סופרמפלצות)
     for (let i = 0; i < specialObstacles.length; i++) {
         const specialObstacle = specialObstacles[i];
 
@@ -183,31 +193,19 @@ function gameLoop() {
         const dy = mouse.y - specialObstacle.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        // חשב את הזווית בין המכשול לעכבר
         const angle = Math.atan2(dy, dx);
 
-        // עדכן את מיקום המכשול לעבר העכבר
         const followSpeed = 3 + speed;
         specialObstacle.x += (dx / distance) * followSpeed;
         specialObstacle.y += (dy / distance) * followSpeed;
 
-        // צייר את המכשול בתמונה עם כיוון ההתמקדות
         ctx.save();
         ctx.translate(specialObstacle.x + specialObstacle.size / 2, specialObstacle.y + specialObstacle.size / 2);
         ctx.rotate(angle);
         ctx.drawImage(superMonsterImage, -specialObstacle.size / 2, -specialObstacle.size / 2, specialObstacle.size, specialObstacle.size);
         ctx.restore();
 
-        if (
-            mouse.x < specialObstacle.x + specialObstacle.size &&
-            mouse.x + mouse.radius > specialObstacle.x &&
-            mouse.y < specialObstacle.y + specialObstacle.size &&
-            mouse.y + mouse.radius > specialObstacle.y
-        ) {
-            mouse.radius = mouse.originalRadius;
-            setTimeout(() => {
-                invincible = false;
-            }, 500);
+        if (checkCollision(mouse, specialObstacle)) {
             if (!invincible) {
                 gameOver = true;
                 clearInterval(interval);
@@ -224,21 +222,16 @@ function gameLoop() {
         }
     }
 
-    // טיפול בעיגולים ירוקים
     for (let i = 0; i < greenCircles.length; i++) {
         const greenCircle = greenCircles[i];
 
         ctx.beginPath();
         ctx.arc(greenCircle.x, greenCircle.y, greenCircle.size, 0, Math.PI * 2, false);
-        ctx.fillStyle = 'green';
+        ctx.fillStyle = '#00a305';
         ctx.fill();
 
-        if (
-            mouse.x < greenCircle.x + greenCircle.size &&
-            mouse.x + mouse.radius > greenCircle.x &&
-            mouse.y < greenCircle.y + greenCircle.size &&
-            mouse.y + mouse.radius > greenCircle.y
-        ) {
+        if (checkCollision(mouse, greenCircle)) {
+            collisionSound.play(); // ניגון סאונד בעת התנגשות
             mouse.radius = mouse.originalRadius * 1.5;
             ctx.beginPath();
             ctx.arc(mouse.x, mouse.y, mouse.radius, 0, Math.PI * 2, false);
@@ -247,38 +240,48 @@ function gameLoop() {
             ctx.stroke();
             greenCircles.splice(i, 1);
             i--;
+            invincible = true;
+            setTimeout(() => {
+                invincible = false;
+                mouse.radius = mouse.originalRadius;
+            }, 4000);
         }
     }
 
-    // טיפול במגע בין העכבר למכשולים ירוקים
-    if (mouse.radius > mouse.originalRadius) {
-        invincible = true; // הפוך את העכבר לחסין
-        setTimeout(() => {
-            invincible = false; // הסר חסינות לאחר זמן מה
-        }, 3000);
+    // בדיקה אם העכבר נוגע בעיגול האדום
+    for (let i = 0; i < redCircles.length; i++) {
+        const redCircle = redCircles[i];
+
+        ctx.beginPath();
+        ctx.arc(redCircle.x, redCircle.y, redCircle.size, 0, Math.PI * 2, false);
+        ctx.fillStyle = 'red';
+        ctx.fill();
+
+        if (checkCollision(mouse, redCircle)) {
+            collisionSound.play(); // ניגון סאונד בעת התנגשות
+            specialObstacles = []; // השמדת כל המכשולים המיוחדים
+            redCircles.splice(i, 1); // הסרת העיגול האדום מהמערך
+            i--;
+        }
     }
 
-    // צייר את העכבר מחדש עם העיגול הגדול
-    ctx.beginPath();
-    ctx.arc(mouse.x, mouse.y, mouse.radius, 0, Math.PI * 2, false);
-    ctx.fillStyle = 'blue';
-    ctx.fill();
-
-    // קרא לפונקציה לשוב לחזור עם התמונה של העכבר
     requestAnimationFrame(gameLoop);
 }
 
-// התעדכן למיקום העכבר
 canvas.addEventListener('mousemove', (event) => {
     const rect = canvas.getBoundingClientRect();
     mouse.x = event.clientX - rect.left;
     mouse.y = event.clientY - rect.top;
 });
 
-// התחל משחק מחדש כאשר לוחצים על כפתור "התחל מחדש"
 restartButton.addEventListener('click', () => {
     startGame();
 });
 
-// התחל את המשחק
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
 startGame();
+

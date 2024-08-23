@@ -45,3 +45,8 @@ body, html {
 .hidden {
     display: none;
 }
+
+#restartButton{
+    background-color: rgb(99, 197, 0);
+    height: 35px;
+}
