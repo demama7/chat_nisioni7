@@ -1,0 +1,102 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: linear-gradient(135deg, #ece9e6, #ffffff);
+}
+
+#tools {
+    padding: 10px;
+    background-color: #4a90e2;
+    color: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#tools button {
+    background-color: #3b7ddb;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+#tools button:hover {
+    background-color: #2f69c8;
+}
+
+#colorPicker, #brushSize {
+    margin-left: 10px;
+}
+
+#colorPicker {
+    width: 50px;
+    height: 30px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+#brushSize {
+    width: 150px;
+    margin-left: 5px;
+}
+
+#drawingCanvas {
+    flex-grow: 1;
+    border: 2px solid #4a90e2;
+    background-color: white;
+    cursor: crosshair;
+    display: block;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+
+
+#imageLoader {
+    margin-left: 10px;
+}
+#tools  #undo{
+    background-color: aqua;
+    color: black;
+}
+#tools  #redo{
+    background-color: aqua;
+    color: black;
+    
+}
+#downloadButton{
+    background-color: rgb(43, 255, 0);
+    color: black;
+}
+#uploadImage{
+    background-color: #3b7ddb;
+    border: none;
+    color: white;
+    
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+   
+    cursor: pointer;
+    
+    transition: background-color 0.3s ease;
+}
+.element-class {
+    overflow: hidden;
+  }
+  

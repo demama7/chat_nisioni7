@@ -24,7 +24,7 @@ let specialObstacleInterval;
 let greenCircleInterval;
 let redCircleInterval; // מרווח זמן לעיגולים האדומים
 let invincible = false; 
-
+let pointsGame = 0;
 const monsterImage = new Image();
 monsterImage.src = 'מפלצת.png';
 
@@ -68,7 +68,7 @@ function updateTimer() {
         speed += difficultyIncreaseRate;
         spawnRate = Math.max(200, spawnRate - 15);
     }
-}
+}                                    
 
 function spawnObstacles() {
     if (gameOver) return;
@@ -240,6 +240,7 @@ function gameLoop() {
             ctx.stroke();
             greenCircles.splice(i, 1);
             i--;
+            pointsGame++;
             invincible = true;
             setTimeout(() => {
                 invincible = false;
@@ -262,6 +263,7 @@ function gameLoop() {
             specialObstacles = []; // השמדת כל המכשולים המיוחדים
             redCircles.splice(i, 1); // הסרת העיגול האדום מהמערך
             i--;
+            pointsGame++;
         }
     }
 

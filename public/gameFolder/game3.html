@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>יצירת ציור</title>
+    <link rel="stylesheet" href="style3.css">
+</head>
+<body>
+    <div id="tools">
+        <button id="pencil">עיפרון</button>
+        <button id="eraser">מחק</button>
+        <button id="bucket">דלי</button>
+        <input type="color" id="colorPicker" value="#000000">
+        <label for="brushSize">גודל מברשת:</label>
+        <input type="range" id="brushSize" min="1" max="20" value="2">
+        <button id="downloadButton" style="background-color: rgb(43, 255, 0); color: black;">הורד את הציור</button>
+        <label for="imgWidth">שמאל:</label>
+        <input type="number" id="imgWidth" placeholder="Width" min="0" />
+        <label for="imgHeight">ימין:</label>
+        <input type="number" id="imgHeight" placeholder="Height" min="0" />
+        <button id="resizeImage">שינוי גודל</button>
+        <button id="undo">חזור אחור</button>
+        <button id="redo">צעד קדימה</button>
+        <input type="file" id="uploadImage" accept="image/*">
+        <!-- תפריט לצורות -->
+       
+ 
+
+    </div>
+    
+    <canvas id="drawingCanvas"></canvas>
+
+    <script src="script3.js"></script>
+</body>
+</html>
