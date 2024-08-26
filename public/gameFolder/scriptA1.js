@@ -63,7 +63,7 @@ function updateTimer() {
         timer++;
         const minutes = String(Math.floor(timer / 60)).padStart(2, '0');
         const seconds = String(timer % 60).padStart(2, '0');
-        timerElement.textContent = `${minutes}:${seconds}`;
+        timerElement.textContent = `${ "זמן:" +minutes}:${  seconds} ${"נקודות:"+ pointsGame}`;
 
         speed += difficultyIncreaseRate;
         spawnRate = Math.max(200, spawnRate - 15);
@@ -277,7 +277,9 @@ canvas.addEventListener('mousemove', (event) => {
 });
 
 restartButton.addEventListener('click', () => {
+    pointsGame = 0;
     startGame();
+    
 });
 
 window.addEventListener('resize', () => {
@@ -286,4 +288,7 @@ window.addEventListener('resize', () => {
 });
 
 startGame();
+
+
+
 
