@@ -248,7 +248,7 @@ function gameLoop() {
             }, 4000);
         }
     }
-
+   
     // בדיקה אם העכבר נוגע בעיגול האדום
     for (let i = 0; i < redCircles.length; i++) {
         const redCircle = redCircles[i];
@@ -257,7 +257,7 @@ function gameLoop() {
         ctx.arc(redCircle.x, redCircle.y, redCircle.size, 0, Math.PI * 2, false);
         ctx.fillStyle = 'red';
         ctx.fill();
-
+        
         if (checkCollision(mouse, redCircle)) {
             collisionSound.play(); // ניגון סאונד בעת התנגשות
             specialObstacles = []; // השמדת כל המכשולים המיוחדים
