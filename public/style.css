@@ -443,7 +443,7 @@ button {
 #linkGame3{
     position: absolute;
     top: 25px; /* מרחק מהקצה העליון של המסך */
-    right: 775px; /* מרחק מהקצה הימני של המסך */
+    right:945px ; /* מרחק מהקצה הימני של המסך */
 }
 
 .linkGame{
@@ -457,4 +457,9 @@ button {
 
 #divToolsUser{
     background-color: blue;
+}
+#linkGame4{
+    position: absolute;
+    top: 25px; /* מרחק מהקצה העליון של המסך */
+    right: 775px; /* מרחק מהקצה הימני של המסך */
 }

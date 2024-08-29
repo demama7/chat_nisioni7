@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משחק כישופים</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+   
+    <div id="action-log">
+        <h2>יומן התקפות</h2>
+        <ul id="log-list"></ul>
+    </div>
+    <div class="game-container">
+        
+        <div class="health-bars">
+            <div class="health-bar player-health">
+                <div class="health" id="player-health"></div>
+                <span>חיי שחקן: <span id="player-health-value">1700</span></span>
+            </div>
+            <div class="health-bar enemy-health">
+                <div class="health" id="enemy-health"></div>
+                <span>חיי אויב: <span id="enemy-health-value">2000</span></span>
+            </div>
+        </div>
+
+        <div class="spell-buttons" id="spell-buttons">
+            <!-- הכפתורים של הכישופים יתווספו כאן ב-JavaScript -->
+        </div>
+        
+        <!-- הוספת מקום לכפתורי הכלים -->
+        <div class="item-buttons" id="item-buttons">
+            <!-- כפתורי הכלים יוצגו כאן ב-JavaScript -->
+        </div>
+    </div>
+    <script src="script.js"></script>
+
+</body>
+</html>

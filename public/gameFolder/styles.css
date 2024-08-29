@@ -1,0 +1,140 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.game-container {
+    text-align: center;
+}
+
+/* תכנים קיימים ... */
+/* תכנים קיימים ... */
+
+.spell-buttons {
+    max-height: 100px; /* גובה מקסימלי לפאנל הכישופים */
+    overflow-x: auto; /* אפשר גלילה אופקית */
+    overflow-y: hidden; /* מנע גלילה אנכית */
+    display: flex;
+    flex-direction: row; /* הצגת הכפתורים בשורה */
+    align-items: center; /* יישור הכפתורים במרכז הפאנל */
+    gap: 10px; /* רווח בין הכפתורים */
+    padding: 10px; /* ריפוד פנימי */
+    border: 1px solid #ddd; /* גבול לפאנל */
+    border-radius: 8px; /* פינות מעוגלות לפאנל */
+    background-color: #fff; /* צבע רקע לפאנל */
+    white-space: nowrap; /* מונע שורות חדשות בכפתורים */
+}
+
+/* הגדרה לפאנל גלילה אופקית, אם הכפתורים חורגים מהמסך */
+.spell-buttons::-webkit-scrollbar {
+    height: 12px; /* גובה הסרגל הגלילה */
+}
+
+.spell-buttons::-webkit-scrollbar-thumb {
+    background-color: #888; /* צבע הידית של הסרגל */
+    border-radius: 10px; /* פינות מעוגלות להידית */
+}
+
+.spell-buttons::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* צבע הידית כאשר העכבר מעליה */
+}
+
+.spell-button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    white-space: nowrap; /* מונע שורות חדשות בתוך הכפתור */
+    min-width: 120px; /* רוחב מינימלי לכפתור כדי למנוע התפצלות */
+}
+
+.spell-button:hover {
+    background-color: #45a049;
+}
+
+
+
+#refresh-spells {
+    background-color: #008CBA;
+}
+
+#refresh-spells:hover {
+    background-color: #007bb5;
+}
+
+.health-bars {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.health-bar {
+    width: 45%;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    position: relative;
+}
+
+.health-bar span {
+    display: block;
+    margin-top: 5px;
+}
+
+.health {
+    height: 25px;
+    border-radius: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.player-health .health {
+    background-color: #4CAF50;
+}
+
+.enemy-health .health {
+    background-color: #F44336;
+}
+
+#action-log {
+    margin: 110px;
+}
+
+#action-log h2 {
+    margin: 0;
+}
+
+#log-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#log-list li {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+}
+
+.item-buttons{
+    background-color: #2d4b8d;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;}
