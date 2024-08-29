@@ -48,7 +48,7 @@ const items = [
     {
         name: 'אבן המוות',
         effect: (enemy) => {
-            enemy.health -= 70;
+            enemy.health -= 150;
             enemyAttackReduction = 5; // הפחתת כוח ההתקפה של האויב
         },
         rarity: 0.2375
