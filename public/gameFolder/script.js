@@ -113,7 +113,7 @@ function displayItems() {
 function castSpell(spell) {
     if (!playerTurn) return;
     if ((spell === 'הקפא' && usedFrostSpell) || (spell === 'עשן' && usedSmokeSpell)) {
-        alert(`כישוף ${spell} כבר שוחק. בחר כישוף אחר.`);
+        alert(`כישוף ${spell} כבר שוחק. בחר כישוף אחר (הרוחתה בעת כישוף זה עוד תור)`);
         return;
     }
     let damage = damageValues[spell] || 50;
@@ -133,9 +133,11 @@ function castSpell(spell) {
     logAction(`שחקן השתמש בכישוף '${spell}' והפחית ${damage} חיים לאויב.`);
     updateHealthBars();
     if (spell !== 'הקפא' && spell !== 'עשן') {
+
         extraTurn = false;
         playerTurn = false;
         setTimeout(enemyTurn, 1000);
+       
     }
 }
 // שימוש בפריט
@@ -216,8 +218,13 @@ function updateHealthBars() {
     enemyHealthText.textContent = enemyHealth;
     if (playerHealth <= 0) {
         logAction("שחקן הובס. המשחק נגמר.");
+
+
+        alert("שחקן הובס. המשחק נגמר.");
     } else if (enemyHealth <= 0) {
         logAction("האויב הובס. ניצחת!");
+
+        alert("האויב הובס. ניצחת!");
     }
 }
 
