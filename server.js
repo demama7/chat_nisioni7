@@ -56,17 +56,19 @@ io.on('connection', (socket) => {
 
     socket.on('chat message', (data) => {
         if (!data.userName || !data.message || typeof data.userName !== 'string' || typeof data.message !== 'string') return;
-
+    
         const userName = trim(escape(data.userName));
         const message = {
             id: nextMessageId++,
             userName: userName,
             message: trim(escape(data.message)),
-            image: data.image,
+            image: data.image, // ודא שמקבלים את התמונות בצורה הנכונה
+            video: data.video  // ודא שמקבלים את הוידיאו בצורה הנכונה
         };
         messages.push(message);
         io.emit('chat message', messages);
     });
+    
 
     socket.on('delete message', (messageId) => {
         if (isNaN(messageId)) return;
